@@ -5,11 +5,19 @@ using UnityEngine.UI;
 
 public class GM : MonoBehaviour
 {
-    public GameObject game, startScreen, inGameCanvas;
+    public GameObject game, startScreen, inGameCanvas, gameOverScreen;
     public Button startButton;
     public Text timerText;
     private float timer;
     private bool started;
+    
+    public PlayerOverlap playerOverlap;
+    public Text finalTimerText;
+    public Button restartButton;
+    public SimpleMovement simpleMovement;
+    public Transform startTransform; 
+    
+
 
     // Start is called before the first frame update
     void Start()
@@ -38,12 +46,27 @@ public class GM : MonoBehaviour
             timerText.text = timer.ToString("F2");
         }
 
+        if(playerOverlap.GameOver)
+        {
+            started = false;
+            Cursor.visible = true;
+            game.SetActive(false);
+            gameOverScreen.SetActive(true);
+            restartButton.onClick.AddListener(begin);
+            playerOverlap.ResetTexture();
+            finalTimerText.text = "You made it "+(int)timer+" seconds";
+        }
+
     }
 
     void begin(){
+            playerOverlap.GameOver = false;
+            timer = 0f;
             started = true;
             startScreen.SetActive(false);
+            gameOverScreen.SetActive(false);
             game.SetActive(true);
             inGameCanvas.SetActive(true);
+            simpleMovement.transform.position = startTransform.position;
     }
 }

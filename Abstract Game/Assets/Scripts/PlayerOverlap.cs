@@ -10,9 +10,11 @@ public class PlayerOverlap : MonoBehaviour
 
     public float scale = 1;
 
+    public bool GameOver = false;
+
     void Start()
     {
-        texture = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
+        ResetTexture();
     }
 
     void Update()
@@ -32,6 +34,8 @@ public class PlayerOverlap : MonoBehaviour
         tex.Apply();
 
 
+        GameOver = true;
+
         for(int i = 0; i < renderTexture.width; i++)
         {
             for(int j = 0; j < renderTexture.height;j++)
@@ -39,6 +43,10 @@ public class PlayerOverlap : MonoBehaviour
                 if(tex.GetPixel(i,j).r > 0.0f && tex.GetPixel(i,j).b < 1f)
                 {
                     texture.SetPixel(i,j, new Color(0,0,0) );
+                    GameOver = false;
+                } else if (tex.GetPixel(i,j).r == 1.0f && tex.GetPixel(i,j).b == 1f)
+                {
+                    GameOver = false;
                 }
             }
         }
@@ -46,5 +54,11 @@ public class PlayerOverlap : MonoBehaviour
 
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, renderTexture.width, renderTexture.height), new Vector2(0.5f, 0.5f), renderTexture.width);
         spriteRenderer.sprite = sprite;
+    }
+
+
+    public void ResetTexture()
+    {
+        texture =  new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
     }
 }
